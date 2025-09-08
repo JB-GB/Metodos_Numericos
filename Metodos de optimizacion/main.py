@@ -116,10 +116,10 @@ def metodo_biseccion(a, b, tolerancia, max_iter, buscar_minimo=False):
     raiz = (a + b) / 2
     print("\n" + "="*70)
     if buscar_minimo:
-        print(f"✓ Mínimo encontrado en x = {raiz:.8f}")
+        print(f" [SUCCESS] Mínimo encontrado en x = {raiz:.8f}")
         print(f"  Valor mínimo f(x) = {f(raiz):.8f}")
     else:
-        print(f"✓ Raíz aproximada: x = {raiz:.8f}")
+        print(f" [SUCCESS] Raíz aproximada: x = {raiz:.8f}")
         print(f"  Valor de f(x) = {func(raiz):.8f}")
     print(f"  Iteraciones realizadas: {iteracion}")
     print(f"  Error final: {error:.2e}")
@@ -195,10 +195,10 @@ def iteracion_punto_fijo(x0, tolerancia, max_iter, buscar_minimo=False):
     # Resultado final
     print("\n" + "="*70)
     if buscar_minimo:
-        print(f"✓ Mínimo encontrado en x = {x_actual:.8f}")
+        print(f" [SUCCESS] Mínimo encontrado en x = {x_actual:.8f}")
         print(f"  Valor mínimo f(x) = {f(x_actual):.8f}")
     else:
-        print(f"✓ Raíz aproximada: x = {x_actual:.8f}")
+        print(f" [SUCCESS] Raíz aproximada: x = {x_actual:.8f}")
         print(f"  Valor de f(x) = {f(x_actual):.8f}")
     print(f"  Iteraciones realizadas: {iteracion}")
     print(f"  Error final: {error:.2e}")
@@ -236,10 +236,13 @@ def metodo_newton_raphson(x0, tolerancia, max_iter, buscar_minimo=False):
 
     # Encabezado de la tabla
     if buscar_minimo:
-        print(f"\n{'Iter':<6} {'x_n':<15} {'f\'(x_n)':<15} {'f\'\'(x_n)':<15} {'Error':<15}")
+        c1, c2, c3, c4, c5 = 'Iter', 'x_n', "f'(x_n)", "f''(x_n)", 'Error'
+        print(f"\n{c1:<6} {c2:<15} {c3:<15} {c4:<15} {c5:<15}")
     else:
-        print(f"\n{'Iter':<6} {'x_n':<15} {'f(x_n)':<15} {'f\'(x_n)':<15} {'Error':<15}")
+        c1, c2, c3, c4, c5 = 'Iter', 'x_n', 'f(x_n)', "f'(x_n)", 'Error'
+        print(f"\n{c1:<6} {c2:<15} {c3:<15} {c4:<15} {c5:<15}")
     print("-" * 75)
+
 
     while iteracion < max_iter and error > tolerancia:
         if buscar_minimo:
@@ -279,11 +282,11 @@ def metodo_newton_raphson(x0, tolerancia, max_iter, buscar_minimo=False):
     # Resultado final
     print("\n" + "="*70)
     if buscar_minimo:
-        print(f"✓ Mínimo encontrado en x = {x_actual:.8f}")
+        print(f" [SUCCESS] Mínimo encontrado en x = {x_actual:.8f}")
         print(f"  Valor mínimo f(x) = {f(x_actual):.8f}")
         print(f"  Verificación f'(x) = {f_prima(x_actual):.2e}")
     else:
-        print(f"✓ Raíz aproximada: x = {x_actual:.8f}")
+        print(f" [SUCCESS] Raíz aproximada: x = {x_actual:.8f}")
         print(f"  Valor de f(x) = {f(x_actual):.2e}")
     print(f"  Iteraciones realizadas: {iteracion}")
     print(f"  Error final: {error:.2e}")
@@ -355,10 +358,10 @@ def metodo_secante(x0, x1, tolerancia, max_iter, buscar_minimo=False):
     # Resultado final
     print("\n" + "="*70)
     if buscar_minimo:
-        print(f"✓ Mínimo encontrado en x = {x_actual:.8f}")
+        print(f" [SUCCESS] Mínimo encontrado en x = {x_actual:.8f}")
         print(f"  Valor mínimo f(x) = {f(x_actual):.8f}")
     else:
-        print(f"✓ Raíz aproximada: x = {x_actual:.8f}")
+        print(f" [SUCCESS] Raíz aproximada: x = {x_actual:.8f}")
         print(f"  Valor de f(x) = {f(x_actual):.2e}")
     print(f"  Iteraciones realizadas: {iteracion}")
     print(f"  Error final: {error:.2e}")
@@ -434,7 +437,7 @@ def metodo_seccion_aurea(a, b, tolerancia, max_iter):
 
     # Resultado final
     print("\n" + "="*70)
-    print(f"✓ Mínimo encontrado en x = {x_min:.8f}")
+    print(f" [SUCCESS] Mínimo encontrado en x = {x_min:.8f}")
     print(f"  Valor mínimo f(x) = {f_min:.8f}")
     print(f"  Iteraciones realizadas: {iteracion}")
     print(f"  Error final (tamaño del intervalo): {error:.2e}")
@@ -527,7 +530,7 @@ def main():
             opcion = int(input("\nSeleccione un método (0-5): "))
 
             if opcion == 0:
-                print("\n¡Gracias por usar el programa!")
+                print("\n¡Ejecucion exitosa!")
                 break
             elif opcion < 1 or opcion > 5:
                 print("\n  Opción no válida. Intente nuevamente.")
@@ -561,7 +564,7 @@ def main():
             print("\n" + "="*70)
             continuar = input("\n¿Desea probar otro método? (s/n): ")
             if continuar.lower() != 's':
-                print("\n¡Gracias por usar el programa!")
+                print("\n¡Ejecucion exitosa!")
                 break
 
         except ValueError:
