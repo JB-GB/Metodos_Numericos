@@ -1,0 +1,4 @@
+# Dependencias para ejecutar los scripts de diferenciación e integración
+pandas
+openpyxl
+tabulate
