@@ -10,7 +10,13 @@ Salida: archivos CSV y XLSX en la carpeta `outputs/`.
 from __future__ import annotations
 import os
 import math
-import pandas as pd
+import argparse
+import csv
+from typing import Optional
+try:
+    import pandas as pd
+except Exception:
+    pd = None
 
 from numerical_tools import (
     f_x_ln_x,
@@ -51,10 +57,24 @@ def estimate_cota_three_point(h: float, a: float, b: float) -> float:
     return M * (h ** 2) / 3.0
 
 
-def main():
+def parse_args():
+    p = argparse.ArgumentParser(description="Runner diferenciación: f(x)=x ln x en x0 con h")
+    p.add_argument("--x0", type=float, default=2.0, help="punto donde se aproxima la derivada")
+    p.add_argument("--h", type=float, default=0.1, help="incremento h")
+    p.add_argument("--outdir", type=str, default=None, help="carpeta de salida para resultados")
+    p.add_argument("--no-pandas", action="store_true", help="usar CSV nativo en lugar de pandas")
+    return p.parse_args()
+
+
+def main(x0: Optional[float] = None, h: Optional[float] = None, outdir: Optional[str] = None, no_pandas: bool = False):
     # Parámetros del ejercicio
-    x0 = 2.0
-    h = 0.1
+    if x0 is None or h is None:
+        args = parse_args()
+        x0 = args.x0
+        h = args.h
+        outdir = args.outdir
+        no_pandas = args.no_pandas
+
     # Para las cotas evaluamos en el intervalo que abarque puntos usados:
     a = x0 - 2 * h
     b = x0 + 2 * h
@@ -90,26 +110,38 @@ def main():
             "Cota teorica (estimada)": cota,
         })
 
-    df = pd.DataFrame(rows)
-
-    # Crear carpeta de salida
-    outdir = os.path.join(os.path.dirname(__file__), "outputs")
+    # Construir DataFrame si pandas está disponible y no se solicitó no_pandas
+    if outdir is None:
+        outdir = os.path.join(os.path.dirname(__file__), "outputs")
     os.makedirs(outdir, exist_ok=True)
 
     csv_path = os.path.join(outdir, "differentiation_results.csv")
     xlsx_path = os.path.join(outdir, "differentiation_results.xlsx")
 
-    df.to_csv(csv_path, index=False)
-    # Guardar Excel si openpyxl está disponible
-    try:
-        df.to_excel(xlsx_path, index=False)
-    except Exception:
-        pass
-
-    print("Resultados de diferenciación:")
-    print(df.to_string(index=False))
-    print(f"CSV guardado en: {csv_path}")
-    print(f"XLSX guardado en: {xlsx_path} (si la librería está instalada)")
+    if (not no_pandas) and (pd is not None):
+        df = pd.DataFrame(rows)
+        df.to_csv(csv_path, index=False)
+        try:
+            df.to_excel(xlsx_path, index=False)
+        except Exception:
+            pass
+        print("Resultados de diferenciación:")
+        print(df.to_string(index=False))
+        print(f"CSV guardado en: {csv_path}")
+        print(f"XLSX guardado en: {xlsx_path} (si la librería está instalada)")
+    else:
+        # Escribir CSV nativo
+        with open(csv_path, "w", newline='', encoding='utf-8') as fh:
+            writer = csv.DictWriter(fh, fieldnames=["Metodo", "Aproximacion", "Valor exacto", "Error absoluto", "Cota teorica (estimada)"])
+            writer.writeheader()
+            for r in rows:
+                writer.writerow(r)
+        print("Resultados de diferenciación (CSV nativo):")
+        for r in rows:
+            print(r)
+        print(f"CSV guardado en: {csv_path}")
+        if (pd is None):
+            print("pandas no detectado: no se generó XLSX")
 
 
 if __name__ == "__main__":

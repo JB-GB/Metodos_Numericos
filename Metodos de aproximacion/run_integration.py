@@ -9,7 +9,13 @@ las cotas de error y exporta una tabla con los resultados.
 from __future__ import annotations
 import os
 import math
-import pandas as pd
+import argparse
+import csv
+from typing import Optional
+try:
+    import pandas as pd
+except Exception:
+    pd = None
 
 from numerical_tools import (
     f_1_plus_ln_x,
@@ -49,9 +55,22 @@ def cota_simpson(a: float, b: float) -> float:
     return ((b - a) ** 5) / 2880.0 * M
 
 
-def main():
-    a = 1.0
-    b = 2.0
+def parse_args():
+    p = argparse.ArgumentParser(description="Runner integración para f(x)=1+ln x en [a,b]")
+    p.add_argument("--a", type=float, default=1.0, help="límite inferior a")
+    p.add_argument("--b", type=float, default=2.0, help="límite superior b")
+    p.add_argument("--outdir", type=str, default=None, help="carpeta de salida para resultados")
+    p.add_argument("--no-pandas", action="store_true", help="usar CSV nativo en lugar de pandas")
+    return p.parse_args()
+
+
+def main(a: Optional[float] = None, b: Optional[float] = None, outdir: Optional[str] = None, no_pandas: bool = False):
+    if a is None or b is None:
+        args = parse_args()
+        a = args.a
+        b = args.b
+        outdir = args.outdir
+        no_pandas = args.no_pandas
 
     results = []
 
@@ -96,24 +115,36 @@ def main():
             "Cota teorica (estimada)": cota,
         })
 
-    df = pd.DataFrame(rows)
-
-    outdir = os.path.join(os.path.dirname(__file__), "outputs")
+    if outdir is None:
+        outdir = os.path.join(os.path.dirname(__file__), "outputs")
     os.makedirs(outdir, exist_ok=True)
 
     csv_path = os.path.join(outdir, "integration_results.csv")
     xlsx_path = os.path.join(outdir, "integration_results.xlsx")
 
-    df.to_csv(csv_path, index=False)
-    try:
-        df.to_excel(xlsx_path, index=False)
-    except Exception:
-        pass
-
-    print("Resultados de integración:")
-    print(df.to_string(index=False))
-    print(f"CSV guardado en: {csv_path}")
-    print(f"XLSX guardado en: {xlsx_path} (si la librería está instalada)")
+    if (not no_pandas) and (pd is not None):
+        df = pd.DataFrame(rows)
+        df.to_csv(csv_path, index=False)
+        try:
+            df.to_excel(xlsx_path, index=False)
+        except Exception:
+            pass
+        print("Resultados de integración:")
+        print(df.to_string(index=False))
+        print(f"CSV guardado en: {csv_path}")
+        print(f"XLSX guardado en: {xlsx_path} (si la librería está instalada)")
+    else:
+        with open(csv_path, "w", newline='', encoding='utf-8') as fh:
+            writer = csv.DictWriter(fh, fieldnames=["Metodo", "Aproximacion", "Valor exacto", "Error absoluto", "Cota teorica (estimada)"])
+            writer.writeheader()
+            for r in rows:
+                writer.writerow(r)
+        print("Resultados de integración (CSV nativo):")
+        for r in rows:
+            print(r)
+        print(f"CSV guardado en: {csv_path}")
+        if (pd is None):
+            print("pandas no detectado: no se generó XLSX")
 
 
 if __name__ == "__main__":
