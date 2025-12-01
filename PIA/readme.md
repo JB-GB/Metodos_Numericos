@@ -1,0 +1,1 @@
+Escogimos un modelado 
