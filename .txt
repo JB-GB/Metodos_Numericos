@@ -1,0 +1,4 @@
+1. En la grafica comparativa del caso de uso, es dificil ver las lineas distintas por el estilo punteado de cada linea, si pudieramos cambiarla a lineas seria mucho mejor.
+2. El zoom de la grafica principal es insuficiente. Seria bueno que ignorara los valores CME y CMT, quiero ver de cerca las lineas. Quiero poder truncar un rectangulo de la grafica.
+3. En el caso de uso me gustaria que añadieramos otro paso que es la solucion exacta pero resuelta numericamente, en los @Apuntes apuntes, deberia haber una parte dedicada al algoritmo de como resolver ecuaciones diferenciales numericamente. 
+4. Quisiera que en el panel principal, añadieramos opciones para personalizar el paciente y asi obtener una manera mas visual de como varian los valores de las variables

@@ -1,0 +1,6 @@
+{
+    // Set project interpreter to the Python 3.11 venv we created
+    "python.defaultInterpreterPath": ".venv311\\Scripts\\python.exe",
+    // Backwards-compatible field (older Python extension versions)
+    "python.pythonPath": ".venv311\\Scripts\\python.exe"
+}

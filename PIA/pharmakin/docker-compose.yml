@@ -1,0 +1,13 @@
+services:
+  pharmakin:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/data:/app/data
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+    restart: unless-stopped
+    container_name: pharmakin-app
+
